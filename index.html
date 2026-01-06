@@ -1,251 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Advanced To-Do App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Advanced To-Do App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+<style>
+body {
+  background:#020617;
+  color:#e5e7eb;
+  font-family: Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  padding:20px;
+}
 
-    body {
-      background: #0f172a;
-      color: #e5e7eb;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+.app {
+  width:100%;
+  max-width:520px;
+  background:#020617;
+  border:1px solid #1e293b;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 15px 40px rgba(0,0,0,.6);
+}
 
-    .app {
-      background: #020617;
-      width: 100%;
-      max-width: 420px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
+h1 {
+  text-align:center;
+  margin-bottom:12px;
+}
 
-    h1 {
-      text-align: center;
-      margin-bottom: 16px;
-      font-size: 26px;
-    }
+input, select {
+  width:100%;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:6px;
+  border:none;
+}
 
-    .input-box {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
+button {
+  background:#22c55e;
+  border:none;
+  padding:10px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
 
-    input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
+button:hover { opacity:.9 }
 
-    button {
-      background: #22c55e;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.task {
+  border:1px solid #1e293b;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    button:hover {
-      opacity: 0.9;
-    }
+.task.completed { opacity:.5; text-decoration:line-through }
+.task.overdue { border-color:#ef4444 }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+.priority-high { color:#ef4444 }
+.priority-medium { color:#eab308 }
+.priority-low { color:#22c55e }
 
-    li {
-      background: #020617;
-      border: 1px solid #1e293b;
-      padding: 10px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
+.actions button {
+  background:none;
+  color:#e5e7eb;
+  margin-left:6px;
+}
 
-    li.completed span {
-      text-decoration: line-through;
-      opacity: 0.5;
-    }
+.progress {
+  height:6px;
+  background:#1e293b;
+  border-radius:5px;
+  overflow:hidden;
+  margin:10px 0;
+}
 
-    li span {
-      flex: 1;
-      cursor: pointer;
-    }
+.progress-bar {
+  height:100%;
+  background:#22c55e;
+  width:0%;
+}
 
-    .actions button {
-      background: none;
-      color: #e5e7eb;
-      padding: 0 6px;
-      font-size: 14px;
-    }
+.filters, .top {
+  display:flex;
+  gap:6px;
+  margin-bottom:8px;
+}
 
-    .actions button.delete {
-      color: #ef4444;
-    }
+.filters button {
+  background:none;
+  color:#94a3b8;
+}
 
-    .filters {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 12px;
-      font-size: 14px;
-    }
+.filters button.active {
+  color:#22c55e;
+  font-weight:bold;
+}
 
-    .filters button {
-      background: none;
-      color: #94a3b8;
-      padding: 4px 6px;
-    }
-
-    .filters button.active {
-      color: #22c55e;
-      font-weight: bold;
-    }
-
-    .footer {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 13px;
-      color: #94a3b8;
-    }
-  </style>
+small { color:#94a3b8 }
+</style>
 </head>
+
 <body>
+<div class="app">
 
-  <div class="app">
-    <h1>To-Do App</h1>
+<h1>Advanced To-Do</h1>
 
-    <div class="input-box">
-      <input type="text" id="taskInput" placeholder="Add a new task...">
-      <button onclick="addTask()">Add</button>
-    </div>
+<input id="search" placeholder="Search tasks...">
 
-    <ul id="taskList"></ul>
+<input id="taskText" placeholder="Task name">
+<input type="datetime-local" id="taskDate">
+<select id="priority">
+  <option value="low">Low Priority</option>
+  <option value="medium">Medium Priority</option>
+  <option value="high">High Priority</option>
+</select>
 
-    <div class="filters">
-      <span id="count">0 tasks</span>
-      <div>
-        <button onclick="setFilter('all')" class="active">All</button>
-        <button onclick="setFilter('active')">Active</button>
-        <button onclick="setFilter('completed')">Completed</button>
-        <button onclick="clearCompleted()">Clear</button>
-      </div>
-    </div>
+<button onclick="addTask()">Add Task</button>
 
-    <div class="footer">
-      Saved automatically ✔
-    </div>
-  </div>
+<div class="progress">
+  <div class="progress-bar" id="progress"></div>
+</div>
 
-  <script>
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    let filter = "all";
+<div class="filters">
+  <button onclick="setFilter('all')" class="active">All</button>
+  <button onclick="setFilter('active')">Active</button>
+  <button onclick="setFilter('completed')">Completed</button>
+  <button onclick="clearAll()">Clear All</button>
+</div>
 
-    const taskList = document.getElementById("taskList");
-    const taskInput = document.getElementById("taskInput");
-    const count = document.getElementById("count");
-    const filterButtons = document.querySelectorAll(".filters button");
+<div id="list"></div>
 
-    function save() {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
+<small id="counter"></small>
 
-    function addTask() {
-      const text = taskInput.value.trim();
-      if (!text) return;
+</div>
 
-      tasks.push({
-        id: Date.now(),
-        text,
-        completed: false
-      });
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let filter="all";
 
-      taskInput.value = "";
-      save();
-      render();
-    }
+const list=document.getElementById("list");
 
-    function toggleTask(id) {
-      tasks = tasks.map(t =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-      );
-      save();
-      render();
-    }
+function save(){ localStorage.setItem("tasks",JSON.stringify(tasks)); }
 
-    function deleteTask(id) {
-      tasks = tasks.filter(t => t.id !== id);
-      save();
-      render();
-    }
+function addTask(){
+  const text=taskText.value.trim();
+  if(!text) return;
 
-    function editTask(id) {
-      const task = tasks.find(t => t.id === id);
-      const newText = prompt("Edit task", task.text);
-      if (newText !== null && newText.trim() !== "") {
-        task.text = newText.trim();
-        save();
-        render();
-      }
-    }
+  tasks.push({
+    id:Date.now(),
+    text,
+    date:taskDate.value,
+    priority:priority.value,
+    completed:false
+  });
 
-    function setFilter(value) {
-      filter = value;
-      filterButtons.forEach(btn => btn.classList.remove("active"));
-      event.target.classList.add("active");
-      render();
-    }
+  taskText.value="";
+  taskDate.value="";
+  save(); render();
+}
 
-    function clearCompleted() {
-      tasks = tasks.filter(t => !t.completed);
-      save();
-      render();
-    }
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter") addTask();
+});
 
-    function render() {
-      taskList.innerHTML = "";
+function toggle(id){
+  tasks.find(t=>t.id===id).completed^=1;
+  save(); render();
+}
 
-      let filtered = tasks;
-      if (filter === "active") filtered = tasks.filter(t => !t.completed);
-      if (filter === "completed") filtered = tasks.filter(t => t.completed);
+function del(id){
+  tasks=tasks.filter(t=>t.id!==id);
+  save(); render();
+}
 
-      filtered.forEach(task => {
-        const li = document.createElement("li");
-        if (task.completed) li.classList.add("completed");
+function edit(id){
+  let t=tasks.find(t=>t.id===id);
+  let txt=prompt("Edit task",t.text);
+  if(txt){ t.text=txt; save(); render(); }
+}
 
-        li.innerHTML = `
-          <span onclick="toggleTask(${task.id})">${task.text}</span>
-          <div class="actions">
-            <button onclick="editTask(${task.id})">✏️</button>
-            <button class="delete" onclick="deleteTask(${task.id})">🗑</button>
-          </div>
-        `;
+function setFilter(f){
+  filter=f;
+  document.querySelectorAll(".filters button")
+    .forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  render();
+}
 
-        taskList.appendChild(li);
-      });
+function clearAll(){
+  if(confirm("Delete all tasks?")){
+    tasks=[];
+    save(); render();
+  }
+}
 
-      count.textContent = `${tasks.length} task${tasks.length !== 1 ? "s" : ""}`;
-    }
+search.oninput=render;
 
-    render();
-  </script>
+function render(){
+  list.innerHTML="";
+  let filtered=[...tasks];
 
+  if(filter==="active") filtered=filtered.filter(t=>!t.completed);
+  if(filter==="completed") filtered=filtered.filter(t=>t.completed);
+
+  const q=search.value.toLowerCase();
+  filtered=filtered.filter(t=>t.text.toLowerCase().includes(q));
+
+  filtered.forEach(t=>{
+    const overdue = t.date && !t.completed && new Date(t.date)<new Date();
+    list.innerHTML+=`
+      <div class="task ${t.completed?"completed":""} ${overdue?"overdue":""}">
+        <div onclick="toggle(${t.id})">
+          <b class="priority-${t.priority}">${t.text}</b><br>
+          <small>${t.date||""}</small>
+        </div>
+        <div class="actions">
+          <button onclick="edit(${t.id})">✏️</button>
+          <button onclick="del(${t.id})">🗑</button>
+        </div>
+      </div>`;
+  });
+
+  let done=tasks.filter(t=>t.completed).length;
+  progress.style.width = tasks.length ? (done/tasks.length*100)+"%" : "0%";
+  counter.textContent = `${done}/${tasks.length} completed`;
+}
+
+render();
+</script>
 </body>
 </html>
